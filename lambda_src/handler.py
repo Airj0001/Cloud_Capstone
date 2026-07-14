@@ -44,7 +44,7 @@ def lambda_handler(event, context):
         # --- The one real external API call --------------------------------
         query = urllib.parse.urlencode({
             "q": topic,
-            "pageSize": 5,
+            "pageSize": 3,
             "language": "en",
             "sortBy": "publishedAt",
             "apiKey": api_key,
@@ -92,4 +92,5 @@ def lambda_handler(event, context):
             "headers": {"Content-Type": "application/json"},
             "body": json.dumps({"error": str(exc), "topic": topic}),
         }
+
 
