@@ -51,8 +51,15 @@ def lambda_handler(event, context):
         })
         url = f"https://newsapi.org/v2/everything?{query}"
         req = urllib.request.Request(url, headers={"User-Agent": "capstone-phase2"})
-        with urllib.request.urlopen(req, timeout=15) as response:
-            raw = json.loads(response.read().decode())
+        try:
+            with urllib.request.urlopen(req, timeout=5) as response:
+                raw = json.loads(response.read().decode())
+        except urllib.error.URLError:
+            return {
+                "statusCode": 504,
+                "headers": {"Content-Type": "application/json"},
+                "body": json.dumps({"error": "news upstream timeout", "topic": topic}),
+            }
 
         # --- Transform the result (do something real with it) --------------
         # Keep only the useful fields instead of returning the raw payload.
@@ -85,3 +92,4 @@ def lambda_handler(event, context):
             "headers": {"Content-Type": "application/json"},
             "body": json.dumps({"error": str(exc), "topic": topic}),
         }
+
